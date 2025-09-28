@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# APEX - Academic Project & Experiment X-tracker
 
-## Getting Started
+APEX, bir araştırma laboratuvarındaki projeleri, deneyleri, kullanılan kaynakları ve çıkan yayınları yönetmek için tasarlanmış modern bir web uygulamasıdır. Bu proje, staj kapsamında baştan sona oluşturulmuştur.
 
-First, run the development server:
+##  Özellikler
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Dashboard:** Laboratuvarın genel durumuna hızlı bir bakış (toplam proje, aktif projeler vb.).
+- **Proje Yönetimi:** Projeleri oluşturma, listeleme, detay görme, düzenleme ve silme (CRUD).
+- **Arama ve Filtreleme:** Projeler arasında metin ve durum bazlı arama yapabilme.
+- **İnteraktif Grafikler:** Proje durum dağılımını gösteren pasta grafiği.
+- **Karanlık Mod:** Göz yorgunluğunu azaltan, modern ve akıcı bir karanlık tema.
+- **Duyarlı Tasarım:** Mobil, tablet ve masaüstü cihazlarda sorunsuz bir kullanıcı deneyimi.
+- **Otomatik Testler:** Bileşenlerin doğruluğunu garanti eden birim testleri.
+- **Canlı Bildirimler:** Başarılı/başarısız işlemler için "Toast" bildirimleri.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##  Kullanılan Teknolojiler
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Frontend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** Next.js 14+ (App Router)
+- **Dil:** TypeScript
+- **Stil:** TailwindCSS
+- **State Management:** Zustand (Client State), TanStack Query (Server State)
+- **Form Yönetimi:** React Hook Form & Zod
+- **UI Kütüphaneleri:** Radix UI (Headless Bileşenler için), Lucide React (İkonlar)
+- **Grafikler:** Recharts
+- **Bildirimler:** Sonner
+- **Test:** Jest & React Testing Library
+- **Dokümantasyon:** Storybook
 
-## Learn More
+### Backend (Simülasyon)
 
-To learn more about Next.js, take a look at the following resources:
+- **API:** Next.js Route Handlers ile oluşturulmuş Mock API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+##  Projeyi Yerel Makinede Çalıştırma
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Depoyu klonlayın:**
+   ```bash
+   git clone [...]
+2. **Proje dizinine gidin:**
+   ```bash
+   cd apex-lab-tracker
+3. ***Bağımlılıkları yükleyin***
+   ```bash
+   npm install
+4. ***Geliştirme sunucusunu başlatın***
+   ```bash
+   npm run dev
 
-## Deploy on Vercel
+Uygulama artık http://localhost:3000 adresinde çalışıyor olacaktır.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+##  Gelecek Planı (Roadmap)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Bu projenin gelecekteki versiyonları için planlanan bazı özellikler şunlardır:
+
+- [ ] **Gerçek Kimlik Doğrulama (Authentication):** `NextAuth.js` kullanılarak kullanıcı girişi, kaydı ve oturum yönetimi.
+- [ ] **Veritabanı Entegrasyonu:** Mock API yerine, `PostgreSQL` ve `Prisma` ORM kullanılarak gerçek bir veritabanına geçiş.
+- [ ] **Gelişmiş Yetkilendirme:** Projeleri sadece belirli kullanıcıların görebilmesi veya düzenleyebilmesi.
+- [ ] **Dosya Yükleme:** Projelere ilgili dokümanların (PDF, resim vb.) yüklenebilmesi.
+- [ ] **Detaylı Dashboard:** Tarih aralığına göre filtreleme ve daha fazla grafik çeşidi ekleme.
+- [ ] **Uçtan Uca (E2E) Testler:** `Cypress` veya `Playwright` kullanarak kullanıcı akışlarının baştan sona test edilmesi.
