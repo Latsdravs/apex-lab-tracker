@@ -7,11 +7,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/Input'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Users } from 'lucide-react'
 import { fetchProjects } from '@/lib/api'
 import { Project } from '@/types'
+import { ProjectColumn } from '@/features/projects/ProjectColumn'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { ProjectCardSkeleton } from '@/features/projects/ProjectCardSkeleton'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,6 +72,70 @@ export default function ProjectsClientPage() {
     return <p>Projeler yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>
   }
 
+  if (!projects) {
+    return (
+      <div>
+        <div className='flex justify-between items-center mb-6'>
+          <h1 className='text-3xl font-bold tracking-tight'>Projeler</h1>
+          {role === 'Admin' && (
+            <Link href='/projects/new'>
+              <Button>Yeni Proje Ekle</Button>
+            </Link>
+          )}
+        </div>
+
+        <div className='flex flex-col md:flex-row gap-4 mb-6'>
+          <Input
+            placeholder='Proje adında ara...'
+            className='max-w-sm'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <div className='flex items-center gap-2'>
+            <Button
+              variant={status === '' ? 'default' : 'outline'}
+              onClick={() => setStatus('')}
+            >
+              Tümü
+            </Button>
+            <Button
+              variant={status === 'Active' ? 'default' : 'outline'}
+              onClick={() => setStatus('Active')}
+            >
+              Aktif
+            </Button>
+            <Button
+              variant={status === 'Completed' ? 'default' : 'outline'}
+              onClick={() => setStatus('Completed')}
+            >
+              Tamamlandı
+            </Button>
+          </div>
+        </div>
+
+        <div className='flex gap-6 mt-6'>
+          <div className='flex-1 space-y-4'>
+            <Skeleton className='h-6 w-1/3 mb-2' />
+            <ProjectCardSkeleton />
+          </div>
+          <div className='flex-1 space-y-4'>
+            <Skeleton className='h-6 w-1/3 mb-2' />
+            <ProjectCardSkeleton />
+            <ProjectCardSkeleton />
+          </div>
+          <div className='flex-1 space-y-4'>
+            <Skeleton className='h-6 w-1/3 mb-2' />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const activeProjects = projects?.filter((p) => p.status === 'Active') || []
+  const onHoldProjects = projects?.filter((p) => p.status === 'On Hold') || []
+  const completedProjects =
+    projects?.filter((p) => p.status === 'Completed') || []
+
   return (
     <div>
       <div className='flex justify-between items-center mb-6'>
@@ -112,34 +176,13 @@ export default function ProjectsClientPage() {
         </div>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-        {projects?.map((project) => (
-          <Link href={`/projects/${project.id}`} key={project.id}>
-            <Card className='hover:shadow-lg transition-shadow duration-200 dark:hover:shadow-gray-700'>
-              <CardHeader>
-                <div className='flex justify-between items-start'>
-                  <h2 className='text-xl font-semibold tracking-tight text-foreground dark:text-gray-200'>
-                    {project.name}
-                  </h2>
-                  <Badge variant={getStatusVariant(project.status)}>
-                    {project.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className='text-sm text-muted-foreground dark:text-gray-400 mb-4'>
-                  {project.description}
-                </p>
-                <div className='flex items-center text-sm text-muted-foreground dark:text-gray-400'>
-                  <Users className='h-4 w-4 mr-2' />
-                  <span>Proje Lideri: {project.lead}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+      <div className='flex gap-6 overflow-x-auto pb-4'>
+        <ProjectColumn title='Aktif' projects={activeProjects} />
+        <ProjectColumn title='Beklemede' projects={onHoldProjects} />
+        <ProjectColumn title='Tamamlandı' projects={completedProjects} />
       </div>
-      {totalPages && totalPages > 1 && (
+
+      {/* {totalPages && totalPages > 1 && (
         <div className='flex items-center justify-center gap-4 mt-8'>
           <Button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
@@ -159,7 +202,7 @@ export default function ProjectsClientPage() {
             Sonraki
           </Button>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
