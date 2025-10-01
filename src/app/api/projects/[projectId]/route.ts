@@ -62,3 +62,31 @@ export async function PUT(
     return new Response('Geçersiz JSON formatı', { status: 400 })
   }
 }
+
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ projectId: string }> }
+) {
+  const { projectId } = await context.params
+  const index = mockProjects.findIndex((p) => p.id === projectId)
+
+  if (index === -1) {
+    return new Response('Proje bulunamadı', { status: 404 })
+  }
+
+  try {
+    const { status } = await request.json()
+
+    if (!['Active', 'On Hold', 'Completed'].includes(status)) {
+      return new Response('Geçersiz status değeri', { status: 400 })
+    }
+
+    mockProjects[index].status = status
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    return NextResponse.json(mockProjects[index])
+  } catch (error) {
+    return new Response('Geçersiz JSON formatı', { status: 400 })
+  }
+}

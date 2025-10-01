@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useUserStore } from '@/lib/store'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -19,6 +19,8 @@ import {
   DragStartEvent,
   DragOverlay,
 } from '@dnd-kit/core'
+import { updateProjectStatus } from '@/lib/api'
+import { ProjectStatus } from '@/types'
 import {
   SortableContext, // Kartların sıralanması için, sonra eklenecek
   // sortableKeyboardCoordinates, // Klavye için sıralama koordinatları, sonra eklenecek
@@ -29,6 +31,7 @@ import { ProjectCardSkeleton } from '@/features/projects/ProjectCardSkeleton'
 
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ProjectCard } from '@/features/projects/ProjectCard'
+import { toast } from 'sonner'
 
 interface ProjectsApiResponse {
   projects: Project[]
@@ -97,6 +100,55 @@ export default function ProjectsClientPage() {
     useSensor(KeyboardSensor)
   )
 
+  const queryClient = useQueryClient()
+
+  const { mutate: updateStatus } = useMutation({
+    mutationFn: (variables: { id: string; status: ProjectStatus }) =>
+      updateProjectStatus(variables.id, variables.status),
+
+    onMutate: async (newProjectData) => {
+      await queryClient.cancelQueries({ queryKey: ['projects'] })
+
+      const previousProjects = queryClient.getQueryData<ProjectsApiResponse>([
+        'projects',
+        debouncedQuery,
+        status,
+        page,
+      ])
+
+      queryClient.setQueryData<ProjectsApiResponse>(
+        ['projects', debouncedQuery, status, page],
+        (oldData) => {
+          if (!oldData) return
+          return {
+            ...oldData,
+            projects: oldData.projects.map((p) =>
+              p.id === newProjectData.id
+                ? { ...p, status: newProjectData.status }
+                : p
+            ),
+          }
+        }
+      )
+
+      return { previousProjects }
+    },
+
+    onError: (err, newProjectData, context) => {
+      if (context?.previousProjects) {
+        queryClient.setQueryData(
+          ['projects', debouncedQuery, status, page],
+          context.previousProjects
+        )
+        toast.error('Proje durumu güncellenemedi, değişiklikler geri alındı.')
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+    },
+  })
+
   function handleDragStart(event: DragStartEvent) {
     const project = projects?.find((p) => p.id === event.active.id)
     if (project) {
@@ -105,19 +157,19 @@ export default function ProjectsClientPage() {
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    setActiveProject(null)
     const { active, over } = event
-
-    if (!over) {
-      console.log('Kart geçerli bir alana bırakılmadı.')
-      return
-    }
+    if (!over) return
 
     const activeId = active.id.toString()
-    const overId = over.id.toString()
-    if (activeId === overId) {
-      console.log('Kart aynı yere bırakıldı, hiçbir değişiklik yok.')
+    const overId = over.id.toString() as ProjectStatus
+
+    const currentProject = projects?.find((p) => p.id === activeId)
+    if (!currentProject || currentProject.status === overId) {
       return
     }
+
+    updateStatus({ id: activeId, status: overId })
 
     console.log(`
       --- KART SÜRÜKLENDİ ---
