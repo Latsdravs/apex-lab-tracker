@@ -15,7 +15,7 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogPrimitive.Overlay className='fixed inset-0 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0' />
     <AlertDialogPrimitive.Content
       ref={ref}
-      className={`fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg ${className}`}
+      className={`fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 grid w-full max-w-lg gap-4 border border-border bg-card p-6 shadow-lg duration-200 sm:rounded-radius ${className}`}
       {...props}
     >
       {children}
@@ -41,7 +41,7 @@ const AlertDialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Title
     ref={ref}
-    className={`text-lg font-semibold ${className}`}
+    className={`text-lg font-semibold text-foreground ${className}`}
     {...props}
   />
 ))
@@ -53,7 +53,7 @@ const AlertDialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Description
     ref={ref}
-    className={`text-sm dark:text-gray-400 text-gray-600 ${className}`}
+    className={`text-sm text-muted-foreground ${className}`}
     {...props}
   />
 ))
@@ -76,7 +76,11 @@ const AlertDialogCancel = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Cancel ref={ref} asChild>
-    <Button variant='outline' className={className} {...props} />
+    <Button
+      variant='outline'
+      className={`bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground ${className}`}
+      {...props}
+    />
   </AlertDialogPrimitive.Cancel>
 ))
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
@@ -86,7 +90,10 @@ const AlertDialogAction = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Action ref={ref} asChild>
-    <Button {...props} className={className} />
+    <Button
+      className={`bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground ${className}`}
+      {...props}
+    />
   </AlertDialogPrimitive.Action>
 ))
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName

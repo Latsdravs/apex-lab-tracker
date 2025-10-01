@@ -14,13 +14,20 @@ interface ProjectStatusChartProps {
   data: ChartData
 }
 
-const COLORS = ['#16a34a', '#facc15', '#dc2626'] // Yesil, Sari, Kirmizi
+// Tema uyumlu renkler (light/dark)
+const COLORS = [
+  'var(--color-primary)', // Yeşil yerine primary
+  'var(--color-accent)', // Sarı yerine accent
+  'var(--color-destructive)', // Kırmızı yerine destructive
+]
 
 export function ProjectStatusChart({ data }: ProjectStatusChartProps) {
   return (
     <Card className='col-span-1 lg:col-span-2'>
       <CardHeader>
-        <h3 className='text-lg font-semibold'>Proje Durum Dağılımı</h3>
+        <h3 className='text-lg font-semibold text-foreground'>
+          Proje Durum Dağılımı
+        </h3>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width='100%' height={300}>
@@ -31,7 +38,7 @@ export function ProjectStatusChart({ data }: ProjectStatusChartProps) {
               cy='50%'
               labelLine={false}
               outerRadius={100}
-              fill='#8884d8'
+              fill='var(--color-primary)'
               dataKey='value'
               nameKey='name'
             >
@@ -42,7 +49,7 @@ export function ProjectStatusChart({ data }: ProjectStatusChartProps) {
                 />
               ))}
             </Pie>
-            <Legend />
+            <Legend wrapperStyle={{ color: 'var(--color-foreground)' }} />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>
@@ -57,7 +64,7 @@ export function ProjectStatusChartSkeleton() {
         <Skeleton className='h-6 w-48' />
       </CardHeader>
       <CardContent className='flex items-center justify-center'>
-        <Skeleton className='h-[300px] w-[300px] rounded-full' />
+        <Skeleton className='h-[300px] w-[300px] rounded-full bg-muted' />
       </CardContent>
     </Card>
   )

@@ -38,7 +38,11 @@ export default function HomePage() {
   }
 
   if (isError || !stats) {
-    return <p>Ana panel yüklenirken bir hata oluştu veya veri bulunamadı.</p>
+    return (
+      <p className='text-destructive-foreground'>
+        Ana panel yüklenirken bir hata oluştu veya veri bulunamadı.
+      </p>
+    )
   }
 
   const chartData = [
@@ -49,7 +53,9 @@ export default function HomePage() {
 
   return (
     <div className='space-y-6'>
-      <h1 className='text-3xl font-bold tracking-tight'>Ana Panel</h1>
+      <h1 className='text-3xl font-bold tracking-tight text-foreground'>
+        Ana Panel
+      </h1>
 
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <StatCard
@@ -80,7 +86,7 @@ export default function HomePage() {
         </div>
 
         <div className='col-span-1'>
-          <p className='text-center text-gray-500 p-8 border rounded-lg bg-white'>
+          <p className='text-center text-muted-foreground p-8 border border-border rounded-radius bg-card'>
             Gelecek Bileşenler İçin Alan
           </p>
         </div>

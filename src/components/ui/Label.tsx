@@ -7,7 +7,10 @@ const Label = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <label
     ref={ref}
-    className={twMerge('text-sm font-medium text-gray-700', className)}
+    className={twMerge(
+      'text-sm font-medium text-foreground transition-colors duration-200',
+      className
+    )}
     {...props}
   />
 ))

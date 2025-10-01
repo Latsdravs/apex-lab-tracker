@@ -14,17 +14,24 @@ export function ThemeToggle() {
   }, [])
 
   if (!mounted) {
-    return <Button variant='outline' size='sm' className='w-9 h-9' disabled />
+    return (
+      <Button
+        variant='outline'
+        size='sm'
+        className='w-9 h-9 bg-card text-card-foreground rounded-radius'
+        disabled
+      />
+    )
   }
 
   return (
     <Button
       variant='outline'
       size='sm'
-      className='w-9 h-9'
+      className='w-9 h-9 bg-card text-card-foreground rounded-radius shadow-sm hover:bg-accent hover:text-accent-foreground transition-normal relative overflow-hidden'
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
-      <Sun className='h-5 w-5 scale-100 rotate-0 transition-all dark:-rotate-90 dark:scale-0' />
+      <Sun className='absolute h-5 w-5 scale-100 rotate-0 transition-all dark:-rotate-90 dark:scale-0' />
       <Moon className='absolute h-5 w-5 scale-0 rotate-90 transition-all dark:rotate-0 dark:scale-100' />
       <span className='sr-only'>Temayı değiştir</span>
     </Button>

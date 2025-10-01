@@ -10,13 +10,13 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon: Icon }: StatCardProps) {
   return (
-    <Card>
+    <Card className='bg-card text-card-foreground rounded-radius shadow-sm transition-normal hover:bg-accent hover:text-accent-foreground'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <h3 className='text-sm font-medium text-gray-600'>{title}</h3>
-        <Icon className='h-5 w-5 text-gray-400' />
+        <h3 className='text-sm font-medium text-muted-foreground'>{title}</h3>
+        <Icon className='h-5 w-5 text-muted-foreground' />
       </CardHeader>
       <CardContent>
-        <div className='text-2xl font-bold'>{value}</div>
+        <div className='text-2xl font-bold text-foreground'>{value}</div>
       </CardContent>
     </Card>
   )
@@ -24,13 +24,13 @@ export function StatCard({ title, value, icon: Icon }: StatCardProps) {
 
 export function StatCardSkeleton() {
   return (
-    <Card>
+    <Card className='bg-card text-card-foreground rounded-radius shadow-sm'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Skeleton className='h-4 w-24' />
-        <Skeleton className='h-5 w-5 rounded-full' />
+        <Skeleton className='h-4 w-24 bg-muted' />
+        <Skeleton className='h-5 w-5 rounded-full bg-muted' />
       </CardHeader>
       <CardContent>
-        <Skeleton className='h-8 w-12' />
+        <Skeleton className='h-8 w-12 bg-muted' />
       </CardContent>
     </Card>
   )

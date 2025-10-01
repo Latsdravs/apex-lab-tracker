@@ -3,7 +3,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { Badge } from '@/components/ui/Badge'
-
 import { ArrowLeft, Users, Calendar, Activity } from 'lucide-react'
 import Link from 'next/link'
 import { ProjectActions } from '@/features/projects/ProjectActions'
@@ -30,32 +29,25 @@ export default function ProjectDetailPage() {
     queryFn: () => fetchProjectById(projectId),
   })
 
-  if (isLoading) {
-    return <ProjectDetailSkeleton />
-  }
-
-  if (isError) {
+  if (isLoading) return <ProjectDetailSkeleton />
+  if (isError)
     return <p>Proje yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>
-  }
-
-  if (!project) {
-    return null
-  }
+  if (!project) return null
 
   return (
-    <div>
+    <div className='space-y-4'>
       <Link
         href='/projects'
-        className='inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black mb-4'
+        className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-2'
       >
         <ArrowLeft className='h-4 w-4' />
         Tüm Projelere Geri Dön
       </Link>
 
-      <div className='bg-card p-6 rounded-lg border shadow-sm text-card-foreground'>
-        <div className='flex justify-between items-start mb-4 border-b pb-4'>
+      <div className='bg-card text-card-foreground p-6 rounded-lg border border-border shadow-sm'>
+        <div className='flex justify-between items-start mb-4 border-b border-border pb-4'>
           <div>
-            <h1 className='text-3xl font-bold tracking-tight dark:text-gray-400'>
+            <h1 className='text-3xl font-bold tracking-tight'>
               {project.name}
             </h1>
           </div>
@@ -70,27 +62,25 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        <p className='text-gray-700 dark:text-gray-400 mb-6'>
-          {project.description}
-        </p>
+        <p className='text-muted-foreground mb-6'>{project.description}</p>
 
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
-          <div className='flex items-center gap-2 text-gray-600'>
-            <Users className='h-5 w-5 text-blue-500' />
+          <div className='flex items-center gap-2 text-muted-foreground'>
+            <Users className='h-5 w-5 text-primary' />
             <div>
-              <p className='font-semibold dark:text-gray-400'>Proje Lideri</p>
+              <p className='font-semibold'>Proje Lideri</p>
               <p>{project.lead}</p>
             </div>
           </div>
-          <div className='flex items-center gap-2 dark:text-gray-400 text-gray-600'>
-            <Calendar className='h-5 w-5 text-green-500' />
+          <div className='flex items-center gap-2 text-muted-foreground'>
+            <Calendar className='h-5 w-5 text-primary' />
             <div>
               <p className='font-semibold'>Başlangıç Tarihi</p>
               <p>15.01.2024</p>
             </div>
           </div>
-          <div className='flex items-center gap-2 dark:text-gray-400 text-gray-600'>
-            <Activity className='h-5 w-5 text-yellow-500' />
+          <div className='flex items-center gap-2 text-muted-foreground'>
+            <Activity className='h-5 w-5 text-primary' />
             <div>
               <p className='font-semibold'>Proje Kodu</p>
               <p>{project.id}</p>

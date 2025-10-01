@@ -23,11 +23,11 @@ export default async function EditProjectPage({
   }
 
   return (
-    <div className='dark:text-gray-400'>
-      <h1 className='text-3xl font-bold tracking-tight mb-6 '>
+    <div>
+      <h1 className='text-3xl font-bold tracking-tight mb-6 text-foreground'>
         Projeyi Düzenle: {project.name}
       </h1>
-      <div className='bg-card p-6 rounded-lg border shadow-sm text-card-foreground'>
+      <div className='bg-card text-card-foreground p-6 rounded-lg border border-border shadow-sm'>
         <ProjectForm initialData={projectFormData} />
       </div>
     </div>

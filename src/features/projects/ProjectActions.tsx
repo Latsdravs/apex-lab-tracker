@@ -35,29 +35,41 @@ export function ProjectActions({
       toast.success(`"${projectName}" projesi başarıyla silindi!`)
       router.push('/projects')
     },
-    onError: (error) => {
-      toast.error(`Bir hata oluştu: ${error.message}`)
+    onError: (error: unknown) => {
+      toast.error(`Bir hata oluştu: ${error}`)
     },
   })
 
   return (
     <div className='flex items-center gap-2'>
       <Link href={`/projects/${projectId}/edit`}>
-        <Button variant='outline' size='sm' disabled={isPending}>
+        <Button
+          variant='outline'
+          size='sm'
+          disabled={isPending}
+          className='text-foreground hover:text-primary hover:bg-accent transition-colors'
+        >
           Düzenle
         </Button>
       </Link>
 
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant='destructive' size='sm' disabled={isPending}>
+          <Button
+            variant='destructive'
+            size='sm'
+            disabled={isPending}
+            className='transition-colors'
+          >
             {isPending ? 'Siliniyor...' : 'Sil'}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className='text-foreground'>
+              Emin misiniz?
+            </AlertDialogTitle>
+            <AlertDialogDescription className='text-muted-foreground'>
               Bu işlem geri alınamaz. Bu, &quot;{projectName}&quot; projesini
               kalıcı olarak silecektir.
             </AlertDialogDescription>

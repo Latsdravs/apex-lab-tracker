@@ -115,10 +115,10 @@ export default function ProjectsClientPage() {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {projects?.map((project) => (
           <Link href={`/projects/${project.id}`} key={project.id}>
-            <Card className='hover:shadow-md transition-shadow'>
+            <Card className='hover:shadow-lg transition-shadow duration-200 dark:hover:shadow-gray-700'>
               <CardHeader>
                 <div className='flex justify-between items-start'>
-                  <h2 className='text-xl dark:text-gray-400 font-semibold tracking-tight'>
+                  <h2 className='text-xl font-semibold tracking-tight text-foreground dark:text-gray-200'>
                     {project.name}
                   </h2>
                   <Badge variant={getStatusVariant(project.status)}>
@@ -127,10 +127,10 @@ export default function ProjectsClientPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className='text-sm dark:text-gray-400 text-gray-600 mb-4'>
+                <p className='text-sm text-muted-foreground dark:text-gray-400 mb-4'>
                   {project.description}
                 </p>
-                <div className='flex dark:text-gray-400 items-center text-sm text-gray-500'>
+                <div className='flex items-center text-sm text-muted-foreground dark:text-gray-400'>
                   <Users className='h-4 w-4 mr-2' />
                   <span>Proje Lideri: {project.lead}</span>
                 </div>

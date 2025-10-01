@@ -59,33 +59,54 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 max-w-lg'>
       <div>
-        <Label htmlFor='name'>Proje Adı</Label>
-        <Input id='name' {...register('name')} disabled={isPending} />
+        <Label htmlFor='name' className='text-foreground'>
+          Proje Adı
+        </Label>
+        <Input
+          id='name'
+          {...register('name')}
+          disabled={isPending}
+          className='bg-card text-card-foreground border-border placeholder:text-muted-foreground'
+        />
         {errors.name && (
-          <p className='text-red-500 text-sm mt-1'>{errors.name.message}</p>
+          <p className='text-destructive text-sm mt-1'>{errors.name.message}</p>
         )}
       </div>
       <div>
-        <Label htmlFor='description'>Açıklama</Label>
+        <Label htmlFor='description' className='text-foreground'>
+          Açıklama
+        </Label>
         <Input
           id='description'
           {...register('description')}
           disabled={isPending}
+          className='bg-card text-card-foreground border-border placeholder:text-muted-foreground'
         />
         {errors.description && (
-          <p className='text-red-500 text-sm mt-1'>
+          <p className='text-destructive text-sm mt-1'>
             {errors.description.message}
           </p>
         )}
       </div>
       <div>
-        <Label htmlFor='lead'>Proje Lideri</Label>
-        <Input id='lead' {...register('lead')} disabled={isPending} />
+        <Label htmlFor='lead' className='text-foreground'>
+          Proje Lideri
+        </Label>
+        <Input
+          id='lead'
+          {...register('lead')}
+          disabled={isPending}
+          className='bg-card text-card-foreground border-border placeholder:text-muted-foreground'
+        />
         {errors.lead && (
-          <p className='text-red-500 text-sm mt-1'>{errors.lead.message}</p>
+          <p className='text-destructive text-sm mt-1'>{errors.lead.message}</p>
         )}
       </div>
-      <Button type='submit' disabled={isPending}>
+      <Button
+        type='submit'
+        disabled={isPending}
+        className='bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground'
+      >
         {isPending
           ? 'Kaydediliyor...'
           : initialData

@@ -1,27 +1,142 @@
 @import "tailwindcss";
+@import "tailwindcss/theme";
 
+/* 
+    light theme variables. :')
+ */
+@layer base {
+  :root {
+    /* Layout */
+    --color-background: hsl(0 0% 100%);
+    --color-foreground: hsl(222 47% 11%);
 
+    /* Cards / Popovers / Modals */
+    --color-card: hsl(0 0% 100%);
+    --color-card-foreground: hsl(222 47% 11%);
+    --color-popover: hsl(0 0% 100%);
+    --color-popover-foreground: hsl(222 47% 11%);
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+    /* Buttons / Accent */
+    --color-primary: hsl(217 90% 60%);
+    --color-primary-foreground: hsl(0 0% 100%);
+    --color-secondary: hsl(222 15% 96%);
+    --color-secondary-foreground: hsl(222 47% 11%);
+    --color-accent: hsl(222 15% 94%);
+    --color-accent-foreground: hsl(222 47% 11%);
 
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
- 
+    /* Muted / Subtle */
+    --color-muted: hsl(222 15% 96%);
+    --color-muted-foreground: hsl(215 16% 46%);
+
+    /* Destructive / Error */
+    --color-destructive: hsl(0 72% 51%);
+    --color-destructive-foreground: hsl(210 40% 98%);
+
+    /* Borders & Inputs */
+    --color-border: hsl(214 32% 91%);
+    --color-input: hsl(214 32% 91%);
+
+    /* Focus / Ring */
+    --color-ring: hsl(217 90% 60%);
+
+    /* Radius */
+    --radius-sm: 0.25rem;
+    --radius: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-full: 9999px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);
+
+    /* Transition */
+    --transition-fast: 150ms;
+    --transition-normal: 300ms;
+    --transition-slow: 500ms;
+  }
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+/* 
+   Dark Theme Variables
+ */
+@layer base {
+  .dark {
+    --color-background: hsl(222 15% 12%);
+    --color-foreground: hsl(210 40% 96%);
 
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
+    --color-card: hsl(222 15% 16%);
+    --color-card-foreground: hsl(210 40% 96%);
+    --color-popover: hsl(222 15% 16%);
+    --color-popover-foreground: hsl(210 40% 96%);
 
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  
+    --color-primary: hsl(217 90% 60%);
+    --color-primary-foreground: hsl(0 0% 100%);
+    --color-secondary: hsl(222 15% 20%);
+    --color-secondary-foreground: hsl(210 40% 96%);
+    --color-accent: hsl(217 15% 25%);
+    --color-accent-foreground: hsl(210 40% 96%);
+
+    --color-muted: hsl(222 15% 18%);
+    --color-muted-foreground: hsl(215 20% 65%);
+
+    --color-destructive: hsl(0 65% 55%);
+    --color-destructive-foreground: hsl(210 40% 98%);
+
+    --color-border: hsl(222 15% 22%);
+    --color-input: hsl(222 15% 22%);
+
+    --color-ring: hsl(217 90% 60%);
+  }
+}
+
+/* 
+   Utilities (bg/text/hover/focus/rounded/shadow/transition)
+*/
+@layer utilities {
+  /* Backgrounds */
+  .bg-primary { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-card { background-color: var(--color-card); }
+  .bg-popover { background-color: var(--color-popover); }
+  .bg-accent { background-color: var(--color-accent); }
+  .bg-destructive { background-color: var(--color-destructive); }
+
+  /* Text */
+  .text-primary-foreground { color: var(--color-primary-foreground); }
+  .text-secondary-foreground { color: var(--color-secondary-foreground); }
+  .text-foreground { color: var(--color-foreground); }
+  .text-card-foreground { color: var(--color-card-foreground); }
+  .text-popover-foreground { color: var(--color-popover-foreground); }
+  .text-accent-foreground { color: var(--color-accent-foreground); }
+  .text-destructive-foreground { color: var(--color-destructive-foreground); }
+  .text-muted-foreground { color: var(--color-muted-foreground); }
+
+  /* Hover / Focus versions */
+  .hover\:bg-primary:hover { background-color: var(--color-primary); }
+  .hover\:bg-accent:hover { background-color: var(--color-accent); }
+  .hover\:bg-secondary:hover { background-color: var(--color-secondary); }
+  .hover\:bg-destructive:hover { background-color: var(--color-destructive); }
+
+  .hover\:text-primary-foreground:hover { color: var(--color-primary-foreground); }
+  .hover\:text-accent-foreground:hover { color: var(--color-accent-foreground); }
+  .hover\:text-foreground:hover { color: var(--color-foreground); }
+
+  .focus\:ring { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+
+  /* Border Radius */
+  .rounded-radius { border-radius: var(--radius); }
+  .rounded-sm { border-radius: var(--radius-sm); }
+  .rounded-lg { border-radius: var(--radius-lg); }
+  .rounded-full { border-radius: var(--radius-full); }
+
+  /* Shadow */
+  .shadow-sm { box-shadow: var(--shadow-sm); }
+  .shadow-md { box-shadow: var(--shadow-md); }
+  .shadow-lg { box-shadow: var(--shadow-lg); }
+
+  /* Transitions */
+  .transition-fast { transition: all var(--transition-fast) ease-in-out; }
+  .transition-normal { transition: all var(--transition-normal) ease-in-out; }
+  .transition-slow { transition: all var(--transition-slow) ease-in-out; }
 }

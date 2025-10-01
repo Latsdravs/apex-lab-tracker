@@ -18,7 +18,7 @@ export function Header() {
   const { name } = useUserStore()
 
   return (
-    <header className='h-16 border-b bg-background flex items-center justify-between px-6'>
+    <header className='h-16 border-b bg-card flex items-center justify-between px-6'>
       <div className='lg:hidden flex items-center gap-2'>
         <BeakerIcon className='h-6 w-6 text-blue-600' />
         <span className='font-bold text-md text-gray-800'>APEX</span>
