@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Eye } from 'lucide-react'
 import { Project } from '@/types'
-import { useDraggable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
@@ -22,17 +22,23 @@ export function ProjectCard({
   project,
   isDraggable = false,
 }: ProjectCardProps) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: project.id,
-      disabled: !isDraggable,
-    })
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: project.id,
+    disabled: !isDraggable,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    opacity: isDragging ? 0 : 1,
+    transition,
+    opacity: isDragging ? 0.5 : 1,
   }
-
   const cardContent = (
     <Card
       className={`transition-shadow duration-200 ${isDraggable ? 'cursor-grab' : 'cursor-default'}`}
@@ -72,7 +78,13 @@ export function ProjectCard({
 
   if (isDraggable) {
     return (
-      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        className={isDragging ? 'transform rotate-3' : ''}
+      >
         {cardContent}
       </div>
     )

@@ -92,3 +92,13 @@ export const updateProjectStatus = (
     body: JSON.stringify({ status }),
   }).then(handleResponse)
 }
+
+export const reorderProjects = (
+  orderedIds: string[]
+): Promise<{ success: boolean }> => {
+  return fetch(`${API_BASE_URL}/projects/reorder`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderedIds }),
+  }).then(handleResponse)
+}

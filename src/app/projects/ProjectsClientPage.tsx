@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/Input'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
-import { fetchProjects } from '@/lib/api'
+import { fetchProjects, reorderProjects } from '@/lib/api'
 import { Project } from '@/types'
 import {
   DndContext,
@@ -18,14 +18,11 @@ import {
   KeyboardSensor,
   DragStartEvent,
   DragOverlay,
+  defaultDropAnimationSideEffects,
 } from '@dnd-kit/core'
 import { updateProjectStatus } from '@/lib/api'
 import { ProjectStatus } from '@/types'
-import {
-  SortableContext, // Kartların sıralanması için, sonra eklenecek
-  // sortableKeyboardCoordinates, // Klavye için sıralama koordinatları, sonra eklenecek
-  // arrayMove, // Dizi içinde eleman hareket ettirme, sonra eklenecek
-} from '@dnd-kit/sortable'
+import { arrayMove } from '@dnd-kit/sortable'
 import { ProjectColumn } from '@/features/projects/ProjectColumn'
 import { ProjectCardSkeleton } from '@/features/projects/ProjectCardSkeleton'
 
@@ -42,6 +39,12 @@ const getStatusVariant = (status: Project['status']) => {
   if (status === 'Active') return 'success'
   if (status === 'On Hold') return 'warning'
   return 'default'
+}
+
+const dropAnimation = {
+  sideEffects: defaultDropAnimationSideEffects({
+    styles: { active: { opacity: '0.5' } },
+  }),
 }
 
 export default function ProjectsClientPage() {
@@ -77,7 +80,15 @@ export default function ProjectsClientPage() {
     queryFn: () => fetchProjects(debouncedQuery, status, page),
   })
 
-  const projects = data?.projects
+  const [projects, setProjects] = useState<Project[]>(data?.projects || [])
+
+  // Veri geldiğinde local state'i güncellemek için useEffect
+  useEffect(() => {
+    if (data?.projects) {
+      setProjects(data.projects)
+    }
+  }, [data])
+
   const totalPages = data?.totalPages
 
   useEffect(() => {
@@ -102,7 +113,7 @@ export default function ProjectsClientPage() {
 
   const queryClient = useQueryClient()
 
-  const { mutate: updateStatus } = useMutation({
+  const { mutate: updateStatusMutation } = useMutation({
     mutationFn: (variables: { id: string; status: ProjectStatus }) =>
       updateProjectStatus(variables.id, variables.status),
 
@@ -149,6 +160,36 @@ export default function ProjectsClientPage() {
     },
   })
 
+  const { mutate: reorderMutation } = useMutation({
+    mutationFn: reorderProjects, // API fonksiyonumuz
+
+    onMutate: async (orderedIds: string[]) => {
+      await queryClient.cancelQueries({ queryKey: ['projects'] })
+
+      const previousProjects = queryClient.getQueryData<ProjectsApiResponse>([
+        'projects',
+        debouncedQuery,
+        status,
+        page,
+      ])
+
+      return { previousProjects }
+    },
+    onError: (err, newOrder, context) => {
+      if (context?.previousProjects) {
+        queryClient.setQueryData(
+          ['projects', debouncedQuery, status, page],
+          context.previousProjects
+        )
+        setProjects(context.previousProjects.projects)
+        toast.error('Projeler sıralanamadı, değişiklikler geri alındı.')
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+    },
+  })
+
   function handleDragStart(event: DragStartEvent) {
     const project = projects?.find((p) => p.id === event.active.id)
     if (project) {
@@ -157,28 +198,68 @@ export default function ProjectsClientPage() {
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    setActiveProject(null)
     const { active, over } = event
+    setActiveProject(null)
+
     if (!over) return
 
     const activeId = active.id.toString()
-    const overId = over.id.toString() as ProjectStatus
+    const overId = over.id.toString()
 
-    const currentProject = projects?.find((p) => p.id === activeId)
-    if (!currentProject || currentProject.status === overId) {
+    if (activeId === overId) return
+
+    const activeProject = projects.find((p) => p.id === activeId)
+    const overProject = projects.find((p) => p.id === overId)
+
+    if (!activeProject) return
+
+    const overIsAColumn = ['Active', 'On Hold', 'Completed'].includes(overId)
+    if (overIsAColumn && activeProject.status !== overId) {
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === activeId ? { ...p, status: overId as ProjectStatus } : p
+        )
+      )
+
+      updateStatusMutation({ id: activeId, status: overId as ProjectStatus })
       return
     }
 
-    updateStatus({ id: activeId, status: overId })
+    if (overProject) {
+      if (activeProject.status === overProject.status) {
+        const oldIndex = projects.findIndex((p) => p.id === activeId)
+        const newIndex = projects.findIndex((p) => p.id === overId)
 
-    console.log(`
-      --- KART SÜRÜKLENDİ ---
-      Sürüklenen Kart ID: ${activeId}
-      Bırakıldığı Sütun ID: ${overId}
-      Bu bilgiyi API'ye göndereceğiz.
-    `)
+        if (oldIndex !== newIndex) {
+          const newOrder = arrayMove(projects, oldIndex, newIndex)
 
-    setActiveProject(null)
+          setProjects(newOrder)
+
+          const orderedIdsInColumn = newOrder
+            .filter((p) => p.status === activeProject.status)
+            .map((p) => p.id)
+
+          reorderMutation(orderedIdsInColumn)
+        }
+      } else {
+        const newStatus = overProject.status
+        setProjects((prev) =>
+          prev.map((p) => (p.id === activeId ? { ...p, status: newStatus } : p))
+        )
+
+        updateStatusMutation(
+          { id: activeId, status: newStatus },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ['projects'] })
+              toast.success(
+                `'${activeProject.name}' projesi '${newStatus}' sütununa taşındı.`
+              )
+            },
+          }
+        )
+      }
+    }
   }
 
   if (isError) {
@@ -312,7 +393,7 @@ export default function ProjectsClientPage() {
           </div>
         )}
       </div>
-      <DragOverlay>
+      <DragOverlay dropAnimation={dropAnimation}>
         {activeProject ? (
           <ProjectCard project={activeProject} isDraggable={false} />
         ) : null}
