@@ -35,12 +35,6 @@ interface ProjectsApiResponse {
   totalPages: number
 }
 
-const getStatusVariant = (status: Project['status']) => {
-  if (status === 'Active') return 'success'
-  if (status === 'On Hold') return 'warning'
-  return 'default'
-}
-
 const dropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
     styles: { active: { opacity: '0.5' } },

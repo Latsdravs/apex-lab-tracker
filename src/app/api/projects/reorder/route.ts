@@ -21,8 +21,6 @@ export async function POST(request: Request) {
     mockProjects.length = 0
     mockProjects.push(...newFullOrder)
 
-    console.log('Projeler BAŞARIYLA yeniden sıralandı.')
-
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     return NextResponse.json({ success: true })
